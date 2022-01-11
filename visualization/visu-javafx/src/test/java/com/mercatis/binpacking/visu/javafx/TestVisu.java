@@ -33,8 +33,8 @@ public class TestVisu extends Application {
 		final List<Box> tItems = new ArrayList<>();
 
 
-		tItems.add(new Box(140, 140, 140, 0));
-		tItems.add(new Box(80, 80, 110, 0));
+		tItems.add(new Box(280, 140, 10, 0));
+		tItems.add(new Box(220, 80, 5, 0));
 //		tPackager.pack(tItems, tCarton, Long.MAX_VALUE, 1);
 
 //

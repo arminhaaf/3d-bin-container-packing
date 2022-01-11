@@ -46,6 +46,11 @@ public class BagContainer extends Container {
 					, calcFoldedHeightForBaseArea(tLargestAreaDownDim.getWidth(), tLargestAreaDownDim.getDepth()));
 
 			return tFoldedDimension.canHold3D(pDimension);
+		} else if (tLargestAreaDownDim.getWidth() > width || tLargestAreaDownDim.getDepth() > depth) {
+			// downfolding
+			final BagContainer tBagContainer = new BagContainer(this);
+			tBagContainer.foldBoxToHeight(pDimension.getHeight());
+			return tBagContainer.canHold3D(pDimension);
 		} else {
 			return false;
 		}
@@ -96,13 +101,24 @@ public class BagContainer extends Container {
 	}
 
 	void foldBoxToBaseArea(final int pMaxX, final int pMaxY) {
-		final int tFoldLength = Math.min(width - pMaxX, depth - pMaxY);
-		if (tFoldLength < 0) {
-			throw new IllegalArgumentException("got fold length less than zero");
+		// 2 possible types of folding
+		// gain height -> decrease width and depth
+		// gain width (resp. depth its the same) -> decrease height and depth
+		if (pMaxX <= width && pMaxY <= depth) {
+			// gain height
+			final int tFoldLength = Math.min(width - pMaxX, depth - pMaxY);
+			if (tFoldLength < 0) {
+				throw new IllegalArgumentException("got fold length less than zero");
+			}
+			height += tFoldLength;
+			width -= tFoldLength;
+			depth -= tFoldLength;
+		} else {
+			// gain width
+			final int tFoldDownLength = Math.min(width - pMaxX, depth - pMaxY);
+			height += tFoldDownLength;
+			width -= tFoldDownLength;
 		}
-		height += tFoldLength;
-		width -= tFoldLength;
-		depth -= tFoldLength;
 		calculateVolume();
 	}
 
@@ -112,21 +128,28 @@ public class BagContainer extends Container {
 			height += tFoldLength;
 			width -= tFoldLength;
 			depth -= tFoldLength;
-			calculateVolume();
-		} else {
-			throw new IllegalArgumentException("cannot fold to smaller height");
+		} else if (tHeight < height) {
+			// downfolding -> can gain width or height
+			final int tFoldDownLength = height - tHeight;
+			height -= tFoldDownLength;
+			width += tFoldDownLength;
 		}
+		calculateVolume();
+
 	}
 
 	protected int calcFoldedHeightForBaseArea(int pWidth, int pDepth) {
 		if (pWidth < width && pDepth < depth) {
 			final int tFoldLength = Math.min(width - pWidth, depth - pDepth);
 			return height + tFoldLength;
+		} else if (pWidth > width || pDepth > depth) {
+			final int tFoldDownLength = Math.min(width - pWidth, depth - pDepth);
+			;
+			return height + tFoldDownLength;
 		} else {
 			return height;
 		}
 	}
-
 
 	public boolean isEmpty() {
 		return levels.isEmpty() || levels.get(0).isEmpty();
