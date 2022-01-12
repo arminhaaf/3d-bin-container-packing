@@ -9,27 +9,38 @@ package com.github.skjolber.packing;
  */
 public class BagContainer extends Container {
 
+	private final Box originalBox;
+
 	public BagContainer(final Container pContainer) {
-		super(pContainer);
+		this(pContainer.getName(), pContainer.getWidth(), pContainer.getDepth(), pContainer.getHeight(), pContainer.getWeight());
+	}
 
+	public BagContainer(final Dimension pDimension, final int pWeight) {
+		this(pDimension.getName(), pDimension.getWidth(), pDimension.getDepth(), pDimension.getHeight(), pWeight);
+	}
+
+	public BagContainer(final int pWidth, final int pDepth, final int pHeight, final int pWeight) {
+		this(null, pWidth,pDepth,pHeight,pWeight);
+	}
+
+	public BagContainer(final String pName, final int pWidth, final int pDepth, final int pHeight, final int pWeight) {
+		super(pName, pWidth, pDepth, pHeight, pWeight);
+		originalBox = new Box(this, getWeight());
+		
 		rotateLargestAreaDown();
-	}
-
-	public BagContainer(final Dimension dimension, final int weight) {
-		super(dimension, weight);
-	}
-
-	public BagContainer(final int w, final int d, final int h, final int weight) {
-		super(w, d, h, weight);
-	}
-
-	public BagContainer(final String name, final int w, final int d, final int h, final int weight) {
-		super(name, w, d, h, weight);
 	}
 
 	@Override
 	public Container clone() {
 		return new BagContainer(this);
+	}
+
+	public Box getOriginalBox() {
+		return originalBox;
+	}
+
+	public int getLargestSideLength() {
+		return Math.max(getWidth(), originalBox.getWidth());
 	}
 
 	/**
