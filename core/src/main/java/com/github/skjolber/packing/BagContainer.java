@@ -46,7 +46,7 @@ public class BagContainer extends Container {
 	/**
 	 * Fits the given dimension into this bag, when use folding
 	 */
-	boolean canHoldWithFolding(final Dimension pDimension) {
+	public boolean canHoldWithFolding(final Dimension pDimension) {
 		// bag logik, passt das mit auffalten
 		// grösste Flache nach unten drehen
 		final Dimension tLargestAreaDownDim = rotateLargestAreaDown(pDimension);
@@ -60,7 +60,7 @@ public class BagContainer extends Container {
 		} else if (tLargestAreaDownDim.getWidth() > width || tLargestAreaDownDim.getDepth() > depth) {
 			// downfolding
 			final BagContainer tBagContainer = new BagContainer(this);
-			tBagContainer.foldBoxToHeight(pDimension.getHeight());
+			tBagContainer.foldBoxToHeight(tLargestAreaDownDim.getHeight());
 			return tBagContainer.canHold3D(pDimension);
 		} else {
 			return false;
