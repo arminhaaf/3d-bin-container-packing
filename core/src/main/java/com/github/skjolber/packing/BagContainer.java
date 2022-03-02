@@ -158,7 +158,6 @@ public class BagContainer extends Container {
 			return height + tFoldLength;
 		} else if (pWidth > width || pDepth > depth) {
 			final int tFoldDownLength = Math.min(width - pWidth, depth - pDepth);
-			;
 			return height + tFoldDownLength;
 		} else {
 			return height;
