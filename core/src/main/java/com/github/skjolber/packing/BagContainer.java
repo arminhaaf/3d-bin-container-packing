@@ -20,13 +20,13 @@ public class BagContainer extends Container {
 	}
 
 	public BagContainer(final int pWidth, final int pDepth, final int pHeight, final int pWeight) {
-		this(null, pWidth,pDepth,pHeight,pWeight);
+		this(null, pWidth, pDepth, pHeight, pWeight);
 	}
 
 	public BagContainer(final String pName, final int pWidth, final int pDepth, final int pHeight, final int pWeight) {
 		super(pName, pWidth, pDepth, pHeight, pWeight);
 		originalBox = new Box(this, getWeight());
-		
+
 		rotateLargestAreaDown();
 	}
 
@@ -115,33 +115,36 @@ public class BagContainer extends Container {
 		// 2 possible types of folding
 		// gain height -> decrease width and depth
 		// gain width (resp. depth its the same) -> decrease height and depth
-		if (pMaxX <= width && pMaxY <= depth) {
+
+		// calculation should base on orig dimensions
+		final Dimension tOrigDimension = rotateLargestAreaDown(originalBox);
+		if (pMaxX <= tOrigDimension.width && pMaxY <= tOrigDimension.depth) {
 			// gain height
-			final int tFoldLength = Math.min(width - pMaxX, depth - pMaxY);
+			final int tFoldLength = Math.min(tOrigDimension.width - pMaxX, tOrigDimension.depth - pMaxY);
 			if (tFoldLength < 0) {
 				throw new IllegalArgumentException("got fold length less than zero");
 			}
-			height += tFoldLength;
-			width -= tFoldLength;
-			depth -= tFoldLength;
+			height = tOrigDimension.height + tFoldLength;
+			width = tOrigDimension.width - tFoldLength;
+			depth = tOrigDimension.depth - tFoldLength;
 		} else {
-			// gain width
-			final int tFoldDownLength = Math.min(width - pMaxX, depth - pMaxY);
-			height += tFoldDownLength;
-			width -= tFoldDownLength;
+			// gain width (folddownlength is negative!)
+			final int tFoldDownLength = Math.min(tOrigDimension.width - pMaxX, tOrigDimension.depth - pMaxY);
+			height = tOrigDimension.height + tFoldDownLength;
+			width = tOrigDimension.width - tFoldDownLength;
 		}
 		calculateVolume();
 	}
 
-	void foldBoxToHeight(final int tHeight) {
-		if (tHeight > height) {
-			final int tFoldLength = tHeight - height;
+	void foldBoxToHeight(final int pHeight) {
+		if (pHeight > height) {
+			final int tFoldLength = pHeight - height;
 			height += tFoldLength;
 			width -= tFoldLength;
 			depth -= tFoldLength;
-		} else if (tHeight < height) {
-			// downfolding -> can gain width or height
-			final int tFoldDownLength = height - tHeight;
+		} else if (pHeight < height) {
+			// downfolding -> can gain width or heigth
+			final int tFoldDownLength = height - pHeight;
 			height -= tFoldDownLength;
 			width += tFoldDownLength;
 		}
