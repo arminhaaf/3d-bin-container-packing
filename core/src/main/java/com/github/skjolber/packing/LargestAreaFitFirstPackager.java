@@ -222,7 +222,7 @@ public class LargestAreaFitFirstPackager extends Packager {
 
 		Space[] spaces = getFreespaces(freeSpace, usedSpace);
 
-		Placement primaryPlacement = getBestBoxAndSpace(containerProducts, spaces, holder.getFreeWeight());
+		Placement primaryPlacement = getBestBoxAndSpace(holder, containerProducts, spaces, holder.getFreeWeight());
 		if(primaryPlacement == null) {
 			// no additional boxes along the level floor (x,y)
 			// just make sure the used space fits in the free space
@@ -254,7 +254,7 @@ public class LargestAreaFitFirstPackager extends Packager {
 			// stack in the 'sibling' space - the space left over between the used box and the selected free space
 			Space remainder = primaryPlacement.getSpace().getRemainder();
 			if(remainder.nonEmpty()) {
-				Box remainderBox = getBestBoxForSpace(containerProducts, remainder, holder.getFreeWeight());
+				Box remainderBox = getBestBoxForSpace(holder, containerProducts, remainder, holder.getFreeWeight());
 				if(remainderBox != null) {
 					removeIdentical(containerProducts, remainderBox);
 
@@ -388,10 +388,10 @@ public class LargestAreaFitFirstPackager extends Packager {
 					Space nextSpace = null;
 
 					if(widthRemainder.nonEmpty()) {
-						widthRemainderBox = getBestBoxForSpace(containerProducts, widthRemainder, holder.getFreeWeight());
+						widthRemainderBox = getBestBoxForSpace(holder, containerProducts, widthRemainder, holder.getFreeWeight());
 					} 
 					if(depthRemainder.nonEmpty()) {
-						depthRemainderBox = getBestBoxForSpace(containerProducts, depthRemainder, holder.getFreeWeight());
+						depthRemainderBox = getBestBoxForSpace(holder, containerProducts, depthRemainder, holder.getFreeWeight());
 					}
 					
 					if(depthRemainderBox != null && (widthRemainderBox == null || depthRemainder.getVolume() > widthRemainder.getVolume())) {
@@ -604,7 +604,7 @@ public class LargestAreaFitFirstPackager extends Packager {
 		return freeSpaces;
 	}
 
-	protected Box getBestBoxForSpace(List<Box> containerProducts, Space space, int freeWeight) {
+	protected Box getBestBoxForSpace(final Container pHolder, List<Box> containerProducts, Space space, int freeWeight) {
 
 		Box bestBox = null;
 		for(Box box : containerProducts) {
@@ -666,7 +666,7 @@ public class LargestAreaFitFirstPackager extends Packager {
 		return Long.compare(b.getFootprint(), a.getFootprint()); // i.e. smaller i better
 	}
 
-	protected Placement getBestBoxAndSpace(List<Box> containerProducts, Space[] spaces, int freeWeight) {
+	protected Placement getBestBoxAndSpace(final Container pHolder, List<Box> containerProducts, Space[] spaces, int freeWeight) {
 
 		// this method could have many implementation
 		// it focuses on getting the biggest box possible fitted.
@@ -681,7 +681,7 @@ public class LargestAreaFitFirstPackager extends Packager {
 				continue;
 			}
 
-			Box box = getBestBoxForSpace(containerProducts, space, freeWeight);
+			Box box = getBestBoxForSpace(pHolder, containerProducts, space, freeWeight);
 			if(box == null) {
 				continue;
 			}
