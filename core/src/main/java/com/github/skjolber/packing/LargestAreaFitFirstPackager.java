@@ -212,7 +212,7 @@ public class LargestAreaFitFirstPackager extends Packager {
 
 		if(containerProducts.isEmpty()) {
 			// no additional boxes
-			packCallback.placementAdded(tPlacement);
+			packCallback.placementAdded(holder, tPlacement);
 			return true;
 		}
 
@@ -227,8 +227,8 @@ public class LargestAreaFitFirstPackager extends Packager {
 			// no additional boxes along the level floor (x,y)
 			// just make sure the used space fits in the free space
 			usedSpace.fitRotate2D(freeSpace);
-			packCallback.placementAdded(tPlacement);
-			packCallback.freeSpacesCalculated(Arrays.asList(spaces));
+			packCallback.placementAdded(holder, tPlacement);
+			packCallback.freeSpacesCalculated(holder, Arrays.asList(spaces));
 
 		} else {
 			// check whether the selected free space requires the used space box to be rotated
@@ -236,8 +236,8 @@ public class LargestAreaFitFirstPackager extends Packager {
 				// the desired space implies that we rotate the used space box
 				usedSpace.rotate2D();
 			}
-			packCallback.placementAdded(tPlacement);
-			packCallback.freeSpacesCalculated(Arrays.asList(spaces));
+			packCallback.placementAdded(holder, tPlacement);
+			packCallback.freeSpacesCalculated(holder, Arrays.asList(spaces));
 
 			// holder.validateCurrentLevel(); // uncomment for debugging
 

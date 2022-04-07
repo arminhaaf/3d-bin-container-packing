@@ -12,16 +12,16 @@ public interface PackCallback {
 	PackCallback DEFAULT = new PackCallback() {
 	};
 
-	default void freeSpacesCalculated(List<Space> pFreeSpaces) {
+	default void freeSpacesCalculated(Container pContainer, List<Space> pFreeSpaces) {
 	}
 
-	default void placementAdded(Placement pPlacement) {
+	default void placementAdded(Container pContainer, Placement pPlacement) {
 	}
 
 	default void levelAdded(Container pContainer, long pNewLevel) {
 	}
 
-	default void packDone() {
+	default void packDone(Container pContainer) {
 	}
 
 }

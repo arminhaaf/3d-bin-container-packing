@@ -7,6 +7,7 @@ import com.github.skjolber.packing.Container;
 import com.github.skjolber.packing.PackCallback;
 import com.github.skjolber.packing.Placement;
 import com.github.skjolber.packing.Space;
+import com.github.skjolber.packing.impl.LAFFResult;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.input.KeyEvent;
@@ -26,6 +27,8 @@ public class TestVisu extends Application {
 
 
 	public void start(Stage pStage) {
+		final ContainerVisu tContainerVisu = new ContainerVisu();
+
 
 		final Container tCarton = new BagContainer("1", 200, 200, 100, 0);
 		BagLargestAreaFitFirstPackager tPackager = new BagLargestAreaFitFirstPackager(Collections.singletonList(tCarton));
@@ -33,9 +36,11 @@ public class TestVisu extends Application {
 		final List<Box> tItems = new ArrayList<>();
 
 
-		tItems.add(new Box(280, 140, 10, 0));
-		tItems.add(new Box(220, 80, 5, 0));
-//		tPackager.pack(tItems, tCarton, Long.MAX_VALUE, 1);
+		final Container tBag = new BagContainer("1", 550, 460, 110, 0);
+		tItems.add(new Box(485, 74, 7, 0));
+//		tItems.add(new Box(220, 80, 5, 0));
+		LAFFResult tPackResult = tPackager.pack(tItems, tBag, Long.MAX_VALUE, 1);
+		tContainerVisu.show(tPackResult.getContainer());
 
 //
 		final Random random = new Random();
@@ -50,12 +55,11 @@ public class TestVisu extends Application {
 		}
 
 
-		final ContainerVisu tContainerVisu = new ContainerVisu();
 		final ContainerNode tContainerNode = tContainerVisu.show(tCarton);
 
 		tPackager.setPackCallback(new PackCallback() {
 			@Override
-			public void freeSpacesCalculated(final List<Space> pFreeSpaces) {
+			public void freeSpacesCalculated(Container pContainer, final List<Space> pFreeSpaces) {
 				Platform.runLater(() -> {
 					tContainerNode.removeTransientBoxes();
 					for (Space tFreeSpace : pFreeSpaces) {
@@ -69,7 +73,7 @@ public class TestVisu extends Application {
 			}
 
 			@Override
-			public void placementAdded(final Placement pPlacement) {
+			public void placementAdded(final Container pContainer, final Placement pPlacement) {
 
 				Platform.runLater(() -> {
 					tContainerNode.removeTransientBoxes();
